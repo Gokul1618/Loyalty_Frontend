@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'; 
 import { useRouter } from 'next/navigation';
 import PDFPage from './pdf';
+import { ChevronLeft } from "lucide-react"; // Import ChevronLeft from lucide-react
+
 
 const App = () => {
   const [rows, setRows] = useState([{
@@ -144,9 +146,17 @@ const App = () => {
     <>
       {!pdfPage ? (
         <div className="form-container">
-          <h2 className="text-xl">Perfoma Invoice</h2>
+          <h2 className="text-xl text-center font-bold">Perfoma Invoice</h2>
           
           <div className="mt-4">
+          <div className="flex items-center justify-start mb-6">
+        <button
+          onClick={() => router.push('/SaleteamDasboard/CustomerConverted')} // Replace with your desired route
+          className="p-3 bg-white text-black rounded-full shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <ChevronLeft size={24} />
+        </button>
+      </div>
             <h3 className="text-lg font-semibold mb-4">Product Details</h3>
             <div className="overflow-x-auto shadow-lg rounded-lg">
               <table className="min-w-full bg-white border border-gray-300">

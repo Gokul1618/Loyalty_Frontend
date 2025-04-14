@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { ChevronLeft } from "lucide-react"; // Import ChevronLeft from lucide-react
 
 const PurchaseOrder = () => {
   const searchParams = useSearchParams();
@@ -129,7 +130,6 @@ const PurchaseOrder = () => {
       // Navigate to the Poppdf page and pass EnquiryNo as a query parameter
       router.push(`/SaleteamDasboard/Poppdf?EnquiryNo=${formData.EnquiryNo}&Eid=${formData.Eid}`);
 
-
       // Reset form data after successful submission
       setFormData({
         rows: [
@@ -162,6 +162,16 @@ const PurchaseOrder = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+      {/* ChevronLeft Back Button */}
+      <div className="flex items-center justify-start mb-6">
+        <button
+          onClick={() => router.push('/SaleteamDasboard/CustomerConverted')} // Replace with your desired route
+          className="p-3 bg-white text-black rounded-full shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <ChevronLeft size={24} />
+        </button>
+      </div>
+
       <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">Create Purchase Order</h1>
       {errorMessage && (
         <div className="bg-red-100 p-4 mb-4 text-red-700 rounded-md">{errorMessage}</div>

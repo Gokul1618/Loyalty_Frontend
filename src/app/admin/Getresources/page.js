@@ -1,12 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { ChevronLeft } from "lucide-react"; // Import ChevronLeft from lucide-react
+import { useRouter } from "next/navigation"; // Import useRouter for navigation
 
 const Getresources = () => {
   const [employees, setEmployees] = useState([]);
   const [error, setError] = useState(null);
   const [editData, setEditData] = useState(null);
   const token = localStorage.getItem("admintokens");
+  const router = useRouter(); // useRouter hook for navigating
 
   useEffect(() => {
     const fetchCompanyResources = async () => {
@@ -124,6 +127,16 @@ const Getresources = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
+      {/* ✅ Back Button with ChevronLeft */}
+      <div className="flex items-center justify-start mb-4">
+        <button
+          onClick={() => router.push('/admin/adminDasboard')} // Replace with your desired route
+          className="p-3 bg-white text-black rounded-full shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <ChevronLeft size={24} />
+        </button>
+      </div>
+
       <div className="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-4 text-gray-800">Employee Details</h1>
 

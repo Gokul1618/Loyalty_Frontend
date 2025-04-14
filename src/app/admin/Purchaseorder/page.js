@@ -2,6 +2,8 @@
 
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { ChevronLeft } from 'lucide-react'; // Import ChevronLeft from lucide-react
+import { useRouter } from 'next/navigation'; // To handle navigation
 
 const Purchaseorder = () => {
   const [getdata, setGetdata] = useState([]);
@@ -9,6 +11,7 @@ const Purchaseorder = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const token = typeof window !== 'undefined' ? localStorage.getItem('admintokens') : null;
+  const router = useRouter(); // For navigation
 
   // Fetch data from API
   const fetchData = async () => {
@@ -47,7 +50,16 @@ const Purchaseorder = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold mb-4 text-center">Quotation Data</h1>
+      <div className="flex items-center justify-start mb-4">
+        <button
+          onClick={() => router.push('/admin/adminDasboard')} 
+          className="p-3 bg-white text-black rounded-full shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <ChevronLeft size={24} />
+        </button>
+      </div>
+
+      <h1 className="text-2xl font-bold mb-4 text-center">Purchase Order Data</h1>
       {loading && <p className="text-center text-blue-500">Loading...</p>}
       {errorMessage && <p className="text-center text-red-500 mb-4">{errorMessage}</p>}
 
@@ -55,7 +67,7 @@ const Purchaseorder = () => {
         <form className="space-y-6">
           {getdata.map((item, index) => (
             <div key={index} className="bg-white shadow-md rounded-lg p-4 space-y-4">
-              <h3 className="text-xl font-semibold">Quotation {index + 1}</h3>
+              <h3 className="text-xl font-semibold">Purchase Order {index + 1}</h3>
 
               {["Eid", "EnquiryNo", "totalAmount", "gst", "gstAmount"].map((field) => (
                 <div key={field} className="mb-2">
@@ -125,4 +137,3 @@ const Purchaseorder = () => {
 };
 
 export default Purchaseorder;
-  

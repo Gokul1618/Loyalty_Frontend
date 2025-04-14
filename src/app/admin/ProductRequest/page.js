@@ -1,11 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { ChevronLeft } from "lucide-react"; // Importing ChevronLeft from lucide-react
+import { useRouter } from 'next/navigation';
 
 const ProductRequests = () => {
   const [productRequests, setProductRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const router = useRouter(); // For navigation
 
   useEffect(() => {
     const fetchProductRequests = async () => {
@@ -40,7 +43,17 @@ const ProductRequests = () => {
   }
 
   return (
-    <div className="container mx-auto px-6 py-8">
+    <div className="p-6 bg-gray-100 min-h-screen">
+      {/* ✅ Back Button */}
+      <div className="flex items-center justify-start mb-4">
+        <button
+          onClick={() => router.push('/admin/adminDasboard')} // Replace with your desired route
+          className="p-3 bg-white text-black rounded-full shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <ChevronLeft size={24} />
+        </button>
+      </div>
+
       <h1 className="text-3xl font-semibold text-gray-800 mb-6">Product Requests</h1>
       {productRequests.length === 0 ? (
         <p className="text-xl text-gray-500">No product requests found.</p>

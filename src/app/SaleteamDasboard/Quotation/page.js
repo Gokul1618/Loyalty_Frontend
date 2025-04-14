@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import axios from 'axios';
+import { ChevronLeft } from "lucide-react"; 
 
 const Home = () => {
   const Eid = localStorage.getItem('idstore');
@@ -145,6 +146,14 @@ const Home = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
+       <div className="flex items-center justify-start mb-6">
+        <button
+          onClick={() => router.push('/SaleteamDasboard/Dasboard')} // Replace with your desired route
+          className="p-3 bg-white text-black rounded-full shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <ChevronLeft size={24} />
+        </button>
+      </div>
       <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">Create Quotation</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <h2 className="text-xl font-bold mb-4">Products</h2>

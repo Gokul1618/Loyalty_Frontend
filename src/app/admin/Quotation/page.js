@@ -1,7 +1,9 @@
-'use client';
+"use client";
+
 import axios from 'axios';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { ChevronLeft } from 'lucide-react'; // Import from lucide-react
 
 const Quotation = () => {
   const [getdata, setGetdata] = useState([]);
@@ -12,6 +14,7 @@ const Quotation = () => {
   const search = useSearchParams();
   const EnquiryNo = search.get('EnquiryNo');
   const token = typeof window !== 'undefined' ? localStorage.getItem('admintokens') : null;
+  const router = useRouter();
 
   const fetchData = async () => {
     if (!token) {
@@ -36,17 +39,11 @@ const Quotation = () => {
       let manyData = [];
 
       if (response1.status === 'fulfilled') {
-        console.log('Edit Quotation Response:', response1.value.data);
         editManyData = response1.value?.data?.formeditedquotation || [];
-      } else {
-        console.error('Edit Quotation Fetch Error:', response1.reason);
       }
 
       if (response2.status === 'fulfilled') {
-        console.log('Many Quotation Response:', response2.value.data);
         manyData = response2.value?.data?.formattedQuotations || [];
-      } else {
-        console.error('Many Quotation Fetch Error:', response2.reason);
       }
 
       let combinedData = [];
@@ -76,7 +73,6 @@ const Quotation = () => {
         setGetdata([]);
       }
     } catch (error) {
-      console.error('Error fetching data:', error.response ? error.response.data : error.message);
       setErrorMessage(
         `Error fetching data: ${
           error.response
@@ -139,8 +135,6 @@ const Quotation = () => {
     setErrorMessage('');
 
     try {
-      console.log('Saving data:', { EnquiryNo, ...updateFields });
-
       const response = await axios.put(
         'http://localhost:5005/api/mdeditQuotation',
         { EnquiryNo, ...updateFields },
@@ -157,7 +151,6 @@ const Quotation = () => {
         setErrorMessage('Failed to update the quotation.');
       }
     } catch (error) {
-      console.error('Error saving quotation:', error.response ? error.response.data : error.message);
       setErrorMessage('Failed to update the quotation.');
     } finally {
       setLoading(false);
@@ -201,7 +194,6 @@ const Quotation = () => {
         setErrorMessage('Failed to verify the quotation.');
       }
     } catch (error) {
-      console.error('Error verifying quotation:', error.response ? error.response.data : error.message);
       setErrorMessage('Failed to verify the quotation.');
     } finally {
       setLoading(false);
@@ -210,7 +202,18 @@ const Quotation = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
+      {/* ✅ Back Button */}
+      <div className="flex items-center justify-start mb-4">
+        <button
+          onClick={() => router.push('/admin/adminDasboard')}
+          className="p-3 bg-white text-black rounded-full shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <ChevronLeft size={24} />
+        </button>
+      </div>
+
       <h1 className="text-2xl font-bold mb-4 text-center">Quotation Data</h1>
+
       {loading && <p className="text-center text-blue-500">Loading...</p>}
       {errorMessage && <p className="text-center text-red-500 mb-4">{errorMessage}</p>}
 
@@ -271,7 +274,7 @@ const Quotation = () => {
                 </>
               )}
 
-              <div className="flex space-x-2">
+              <div className="flex flex-wrap gap-2">
                 {editIndex === index ? (
                   <button
                     type="button"
@@ -297,6 +300,7 @@ const Quotation = () => {
                 >
                   {expandedIndex === index ? 'View Less' : 'View More'}
                 </button>
+
                 <button
                   type="button"
                   onClick={() => handleVerify(index)}

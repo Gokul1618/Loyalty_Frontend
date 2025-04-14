@@ -1,17 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { ChevronLeft } from "lucide-react"; // Import ChevronLeft from lucide-react
+import { useRouter } from "next/navigation"; // Import useRouter for navigation
 
 const ServiceEngineers = () => {
   const [serviceEngineers, setServiceEngineers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const router = useRouter(); // useRouter hook for navigation
 
   useEffect(() => {
     const fetchServiceEngineers = async () => {
       try {
         const response = await axios.get("http://localhost:5005/api/workvisit");
-        console.log(response.data.serviceEngineers)
+        console.log(response.data.serviceEngineers);
         setServiceEngineers(response.data.serviceEngineers);
       } catch (err) {
         setError("Error fetching service engineers");
@@ -42,6 +45,16 @@ const ServiceEngineers = () => {
 
   return (
     <div className="container mx-auto px-6 py-8">
+      {/* ✅ Back Button with ChevronLeft */}
+      <div className="flex items-center justify-start mb-6">
+        <button
+          onClick={() => router.push('/admin/adminDasboard')} // Replace with your desired route
+          className="p-3 bg-white text-black rounded-full shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <ChevronLeft size={24} />
+        </button>
+      </div>
+
       <h1 className="text-3xl font-semibold text-gray-800 mb-6">Service Engineers</h1>
       {serviceEngineers.length === 0 ? (
         <p className="text-xl text-gray-500">No service engineers found.</p>
@@ -60,7 +73,6 @@ const ServiceEngineers = () => {
                 <p className="text-gray-600 mb-1"><strong>Complaints:</strong> {engineer.Problems[0]?.description || "No complaints"}</p>
                 <p className="text-gray-600 mb-1"><strong>Assessment:</strong> {engineer.Assessment}</p>
               </div>
-             
             </div>
           ))}
         </div>

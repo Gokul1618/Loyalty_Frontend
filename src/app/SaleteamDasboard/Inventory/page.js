@@ -13,16 +13,17 @@ const ProductList = () => {
     price: '',
     Brand: '',
     Inward: '',
-    Outward: '0', 
-    Current: '', 
+    Outward: '0',
+    Current: '',
   });
 
   const [editMode, setEditMode] = useState(null);
   const [editedProduct, setEditedProduct] = useState({});
+  const [searchQuery, setSearchQuery] = useState(''); // State to manage search query
   const router = useRouter();
-  const token = localStorage.getItem('admintokens')
+  const token = localStorage.getItem('admintokens');
   const role = localStorage.getItem('role');
-  
+
   // Fetch products
   const fetchProducts = async () => {
     try {
@@ -37,6 +38,13 @@ const ProductList = () => {
     fetchProducts();
   }, []);
 
+  // Filter products based on the search query
+  const filteredProducts = products.filter(
+    (product) =>
+      product.Model.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.Brand.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const handleAddProduct = async (e) => {
     e.preventDefault();
 
@@ -47,27 +55,27 @@ const ProductList = () => {
         const updatedProduct = {
           ...existingProduct,
           ...newProduct,
-          Current: parseInt(existingProduct.Inward) + parseInt(newProduct.Inward) || 0, 
+          Current: parseInt(existingProduct.Inward) + parseInt(newProduct.Inward) || 0,
         };
 
-        const response = await axios.put(`http://localhost:5005/api-Inventory/update/${existingProduct._id}`, updatedProduct ,{
-          headers : {
-            Authorization : `Bearer ${token}`
-          }
+        const response = await axios.put(`http://localhost:5005/api-Inventory/update/${existingProduct._id}`, updatedProduct, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         setProducts(products.map((product) =>
           product._id === existingProduct._id ? { ...product, ...updatedProduct } : product
         ));
       } else {
-        const response = await axios.post('http://localhost:5005/api-inventory/add-product', newProduct , {
-          headers : {
-            Authorization : `Bearer ${token}`
-          }
+        const response = await axios.post('http://localhost:5005/api-inventory/add-product', newProduct, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         setProducts([...products, response.data]);
       }
-        fetchProducts()
+      fetchProducts();
       setNewProduct({
         Itemcode: '',
         Model: '',
@@ -81,25 +89,24 @@ const ProductList = () => {
       console.error('Error adding or updating product:', error);
     }
   };
-  
+
   const handleInputChange = (e) => {
-    const { name, value } = e.target; 
-  
+    const { name, value } = e.target;
+
     if (name === 'Inward') {
-      const inwardValue = parseInt(value) || 0; 
+      const inwardValue = parseInt(value) || 0;
       setNewProduct({
         ...newProduct,
-        [name]: value, 
-        Current: inwardValue, 
+        [name]: value,
+        Current: inwardValue,
       });
     } else {
       setNewProduct({
         ...newProduct,
-        [name]: value, 
+        [name]: value,
       });
     }
   };
-  
 
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
@@ -111,10 +118,10 @@ const ProductList = () => {
 
   const handleSaveEdit = async (id) => {
     try {
-      const response = await axios.put(`http://localhost:5005/api-Inventory/update/${id}`, editedProduct ,{
-        headers : {
-          Authorization : `Bearer ${token}`
-        }
+      const response = await axios.put(`http://localhost:5005/api-Inventory/update/${id}`, editedProduct, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       setProducts(products.map((product) =>
         product._id === id ? { ...product, ...editedProduct } : product
@@ -133,10 +140,10 @@ const ProductList = () => {
 
   const deleteProduct = async (id) => {
     try {
-      await axios.delete(`http://localhost:5005/api-Inventory/delete/${id}`,{
-        headers : {
-          Authorization : `Bearer ${token}`
-        }
+      await axios.delete(`http://localhost:5005/api-Inventory/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       setProducts(products.filter((product) => product._id !== id));
     } catch (error) {
@@ -145,19 +152,30 @@ const ProductList = () => {
   };
 
   const handleBackClick = () => {
-    router.push('/SaleteamDasboard/Dasboard');  
-};
- 
+    router.push('/SaleteamDasboard/Dasboard');
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-teal-100 to-teal-300">
       <div className="w-full max-w-7xl p-8 space-y-6 bg-white rounded-lg shadow-lg">
         <h2 className="text-3xl font-semibold text-teal-700 mb-6">Inventory</h2>
         <button 
-                    onClick={handleBackClick}
-                    className="p-3 bg-white text-black rounded-full shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
-                    >
-                    <ChevronLeft size={24} />
-                </button>
+          onClick={handleBackClick}
+          className="p-3 bg-white text-black rounded-full shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <ChevronLeft size={24} />
+        </button>
+
+        {/* Search Bar */}
+        <div className="flex items-center mb-6">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by Model or Brand"
+            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+          />
+        </div>
 
         <div className="overflow-x-auto shadow-lg border border-gray-200 rounded-lg">
           <table className="min-w-full bg-white">
@@ -174,7 +192,8 @@ const ProductList = () => {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-t" key={newProduct._id}>
+              {/* Add New Product Row */}
+              <tr className="border-t">
                 <td><input className="w-full p-2 border border-gray-300 rounded" type="text" name="Itemcode" value={newProduct.Itemcode} onChange={handleInputChange} /></td>
                 <td><input className="w-full p-2 border border-gray-300 rounded" type="text" name="Model" value={newProduct.Model} onChange={handleInputChange} /></td>
                 <td><input className="w-full p-2 border border-gray-300 rounded" type="number" name="price" value={newProduct.price} onChange={handleInputChange} /></td>
@@ -189,7 +208,8 @@ const ProductList = () => {
                 </td>
               </tr>
 
-              {products.map((product) => (
+              {/* Display Filtered Products */}
+              {filteredProducts.map((product) => (
                 <tr key={product._id} className="border-t hover:bg-gray-50">
                   <td>{editMode === product._id ? (
                     <input className="w-full p-2 border border-gray-300 rounded" type="text" name="Itemcode" value={editedProduct.Itemcode} onChange={handleEditInputChange} />
